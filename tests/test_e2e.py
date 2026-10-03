@@ -73,3 +73,18 @@ def test_history_cli_empty_db(tmp_path, monkeypatch):
     )
     assert proc.returncode == 0, proc.stderr
     assert "No sessions yet" in proc.stdout
+
+
+def test_interview_num_capped_notifies_user():
+    # Asking for more questions than exist prints a notice instead of
+    # silently running a shorter session.
+    proc = subprocess.run(
+        [sys.executable, "-m", "interviewforge", "interview",
+         "--topic", "react", "--list-only", "-n", "1000"],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert "only" in proc.stdout and "available" in proc.stdout

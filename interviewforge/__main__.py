@@ -34,6 +34,9 @@ def cmd_interview(args: argparse.Namespace) -> int:
             print(f"  - {t}")
         return 1
     picked = pick_questions(pool, args.num, seed=args.seed)
+    if args.num > len(picked):
+        print(f"  Note: only {len(picked)} matching question(s) available "
+              f"— running all of them.")
     if args.list_only:
         for q in picked:
             print(f"[{q.id}] ({q.topic}/{q.difficulty}) {q.question}")
