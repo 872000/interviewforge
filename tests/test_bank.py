@@ -4,6 +4,7 @@ import pytest
 
 from interviewforge.bank import (
     VALID_DIFFICULTIES,
+    Question,
     filter_questions,
     load_bank,
     pick_questions,
@@ -64,6 +65,20 @@ def test_pick_questions_deterministic_with_seed(bank):
     first = pick_questions(bank, 5, seed=7)
     second = pick_questions(bank, 5, seed=7)
     assert [q.id for q in first] == [q.id for q in second]
+
+
+def test_nonpositive_time_limit_rejected():
+    base = {
+        "id": "test-001",
+        "topic": "testing",
+        "difficulty": "easy",
+        "question": "What is a test?",
+        "key_points": ["a check that code behaves as expected"],
+        "model_answer": "A test checks behaviour.",
+    }
+    for bad_limit in (0, -30):
+        with pytest.raises(ValueError):
+            Question.from_dict({**base, "time_limit_s": bad_limit})
 
 
 def test_pick_questions_caps_at_pool_size(bank):

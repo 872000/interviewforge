@@ -32,6 +32,9 @@ class Question:
             raise ValueError(f"Question {data['id']} has invalid difficulty: {data['difficulty']}")
         if not data["key_points"]:
             raise ValueError(f"Question {data['id']} has no key points")
+        time_limit_s = int(data.get("time_limit_s", 120))
+        if time_limit_s <= 0:
+            raise ValueError(f"Question {data['id']} has invalid time_limit_s: {time_limit_s}")
         return cls(
             id=data["id"],
             topic=data["topic"],
@@ -39,7 +42,7 @@ class Question:
             question=data["question"],
             key_points=list(data["key_points"]),
             model_answer=data["model_answer"],
-            time_limit_s=int(data.get("time_limit_s", 120)),
+            time_limit_s=time_limit_s,
         )
 
 
